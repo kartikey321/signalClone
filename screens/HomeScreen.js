@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 const HomeScreen = ({ navigation }) => {
 
     const [chats, setChats] = useState([]);
+    const [img, setImg] = useState(null);
 
 
     const userimg = () => {
@@ -25,7 +26,7 @@ const HomeScreen = ({ navigation }) => {
                     //console.log('data : ', documentSnapshot.data());
                     const { displayName, photoUrl } = documentSnapshot.data();
                     console.log(photoUrl);
-                    return photoUrl;
+                    setImg(photoUrl);
 
                 }
             });
@@ -33,6 +34,7 @@ const HomeScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
+        userimg();
         const unsubscribe = firestore().collection('chats').onSnapshot(snapshot =>
             setChats(snapshot.docs.map((doc) => ({
                 id: doc.id,
@@ -57,7 +59,7 @@ const HomeScreen = ({ navigation }) => {
 
                     {/* <Avatar rounded source={{ uri: userimg() }} /> */}
                     <TouchableOpacity onPress={signout} activeOpacity={0.5}>
-                        <Avatar rounded source={{ uri: 'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png' }} />
+                        <Avatar rounded source={{ uri: img }} />
                     </TouchableOpacity>
 
 
@@ -81,7 +83,7 @@ const HomeScreen = ({ navigation }) => {
                 </View>
             )
         });
-    }, [navigation]);
+    }, [navigation, img]);
 
     const signout = () => {
         auth()
